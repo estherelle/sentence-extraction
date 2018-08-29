@@ -4,7 +4,7 @@ import re
 from collections import OrderedDict
 
 def get_sentences(url):
-	url = "http://www.elevate-hr.com/about-us/"
+	# url = "http://www.elevate-hr.com/about-us/"
 
 	# perform GET request to target url
 	r = requests.get(url)
@@ -39,14 +39,19 @@ def get_sentences(url):
 	stripped = [(strip + '.') for strip in stripped]
 
 	cleaned = []
+
+	stopwords = ["function", "{", "}", "https", "http", "href", ");", "javascript", "return", "async", "]", "crossorigin", "error", "js", "()", "var ", "*", "invoked", "\"/\""]
 	for strip in stripped:
-	    separated = strip.split(' ')
-	    if "function" not in strip and len(separated) > 3:
-	        if "{" not in strip:
-	            if "$(" not in strip:
-	                if ");" not in strip:
-	                    if "href" not in strip:
-	                        cleaned.append(strip.strip())
+		separated = strip.split(' ')
+		if len(separated) > 3:
+			stopped = False
+			for stopword in stopwords:
+				if stopword in strip:
+					stopped = True
+					break
+			if not stopped:
+				cleaned.append(strip)
+
 	return " ".join(cleaned), cleaned
 
 # url = "http://www.elevate-hr.com/about-us/"
