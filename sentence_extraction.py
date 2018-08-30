@@ -22,6 +22,7 @@ def get_sentences(url):
 	bod_stripped = bod_sub.replace('.\n', '. ')
 	bod_stripped = bod_stripped.replace('!\n', '. ')
 	bod_stripped = bod_stripped.replace('Inc.', 'Incorporated')
+	bod_stripped = bod_stripped.replace('e.g.', 'eg ')
 	bod_stripped = bod_stripped.replace('?\n', '. ')
 
 
@@ -29,18 +30,21 @@ def get_sentences(url):
 	# replaced by a single newline in line 15
 	bod_s = re.sub(r'(([a-z])|([A-Z]))+\n(([a-z])|([A-Z]))+', ' ',bod_stripped)
 	stripped_newlines = bod_s.replace('\n\n', '. ')
-	stripped_newlines = bod_s.replace('\n', ' ')
+	stripped_newlines = stripped_newlines.replace('\n', ' ')
+	stripped_newlines = stripped_newlines.replace('eg ', 'e.g.')
+	stripped_newlines = stripped_newlines.replace('Incorporated', 'Inc.')
+
 
 	# strip any remaining trailing whitespace (probably unnecessary)
 	stripped_newlines = stripped_newlines.strip()
 
 	# split by sentences and add back period at the end of each sentence
 	stripped = stripped_newlines.split('.')
-	stripped = [(strip + '.') for strip in stripped]
+	stripped = [(strip.strip() + '.') for strip in stripped]
 
 	cleaned = []
 
-	stopwords = ["function", "{", "}", "https", "http", "href", ");", "javascript", "return", "async", "]", "crossorigin", "error", "js", "()", "var ", "*", "invoked", "\"/\""]
+	stopwords = ["function", "{", "}", "https", "http", "href", ");", "javascript", "return", "async", "]", "crossorigin", "error", "js", "()", "var ", "*", "invoked", "\"/\"", "rel ", "; ", ":", "//", "+=", "||"]
 	for strip in stripped:
 		separated = strip.split(' ')
 		if len(separated) > 3:
